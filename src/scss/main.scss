@@ -1,0 +1,147 @@
+@import './mixins.scss';
+
+:root {
+    --border-size: 10px;
+}
+body {
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    // justify-content: center;
+    // align-items: center;
+    justify-content: stretch;
+    align-items: stretch;
+}
+
+#game-container {
+    background:
+        url('../static/border_bottom_right.gif') no-repeat bottom right,
+        url('../static/border_bottom_left.gif') no-repeat bottom left,
+        url('../static/border_top_right.gif') no-repeat top right,
+        url('../static/border_top_left.gif') no-repeat top left,
+        url('../static/border_top.gif') repeat-x top left,
+        url('../static/border_bottom.gif') repeat-x bottom left,
+        url('../static/border_left.gif') repeat-y top left,
+        url('../static/border_right.gif') repeat-y top right;
+    background-color: #C0C0C0;
+
+    padding: var(--border-size);
+    box-sizing: border-box;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    // height: 100%;
+    width: 100%;
+
+    #playground {
+        --rows: 20;
+        --cols: 40;
+        --tile-size: 20px;
+
+        // flex-grow: 1;
+        order: 2;
+        width: calc(var(--cols) * var(--tile-size));
+        height: calc(var(--rows) * var(--tile-size));
+        // flex-grow: 1;
+
+        align-self: center;
+        margin: auto 0;
+
+        background: url('../static/tile_shut.gif') repeat;
+        background-size: var(--tile-size);
+
+        display: grid;
+        grid-template-rows: repeat(var(--rows), 1fr);
+        grid-template-columns: repeat(var(--cols), 1fr);
+
+        i.tile {
+            width: var(--tile-size);
+            height: var(--tile-size);
+
+            background: url('../static/tiles.gif') no-repeat;
+            background-size: var(--tile-size);
+
+            @for $i from 1 through 8 {
+                &.n-#{$i} {
+                    // 16px tamaño tile
+                    background-position-y: calc(-#{$i} * var(--tile-size));
+                }
+              }
+        }
+    }
+
+    #controls {
+        --face-position: 0px;
+        $controls-height: 52px;
+
+        position: relative;
+        height: $controls-height;
+
+        padding-bottom: var(--border-size);
+        background: url('../static/border_bottom.gif') repeat-x bottom left;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        order: 1;
+
+        &::before {
+            @include dummy-pseudo;
+            position: absolute;
+            width: var(--border-size);
+            height: var(--border-size);
+            bottom: 0;
+            left: calc(-1 * var(--border-size));
+            background: url('../static/border_left_inter.gif');
+        }
+        &::after {
+            @include dummy-pseudo;
+            position: absolute;
+            width: var(--border-size);
+            height: var(--border-size);
+            bottom: 0;
+            right: calc(-1 * var(--border-size));
+            background: url('../static/border_right_inter.gif');
+        }
+
+        $controls-size: 40px;
+        & > :first-child {
+            margin-left: #{($controls-height - $controls-size) / 2};
+        }
+        & > :last-child {
+            margin-right: #{($controls-height - $controls-size) / 2};
+        }
+
+        #face-button {
+            width: $controls-size;
+            height: $controls-size;
+
+            background: url('../static/faces.gif');
+            background-size: $controls-size;
+            background-position-y: var(--face-position);
+
+            cursor: pointer;
+        }
+
+        #mine-counter {
+            height: $controls-size;
+            font-size: 0;
+        }
+        #time-counter {
+            height: $controls-size;
+            font-size: 0;
+        }
+    }
+
+    #playground:active + #controls {
+        --face-position: -40px;
+    }
+}
+
+.cnumber {
+    height: 100%;
+}
