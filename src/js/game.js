@@ -4,6 +4,7 @@ import { randomInt } from './utils';
 
 const DEFAULT_GLOBAL_OPTIONS = Object.freeze({
     marks: false,
+    resize: true,
 });
 
 class Game {
@@ -20,7 +21,7 @@ class Game {
 
         this.globalOptions = globalOptions;
         this.model = new Model({ cols, rows, mines });
-        this.view = new View({ cols, rows, model: this.model});
+        this.view = new View({ globalOptions, cols, rows, model: this.model});
         this.model.bindView(this.view);
 
         this.gameStarted = false;

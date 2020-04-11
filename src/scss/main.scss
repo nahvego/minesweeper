@@ -10,10 +10,10 @@ body {
     height: 100vh;
 
     display: flex;
-    // justify-content: center;
-    // align-items: center;
-    justify-content: stretch;
-    align-items: stretch;
+    justify-content: center;
+    align-items: center;
+    // justify-content: stretch;
+    // align-items: stretch;
 }
 
 #game-container {
@@ -35,12 +35,12 @@ body {
     flex-direction: column;
     align-items: stretch;
     // height: 100%;
-    width: 100%;
+    // width: 100%;
 
     #playground {
-        --rows: 20;
-        --cols: 40;
-        --tile-size: 20px;
+        --rows: 0;
+        --cols: 0;
+        --tile-size: 0px;
 
         // flex-grow: 1;
         order: 2;

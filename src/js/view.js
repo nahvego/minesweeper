@@ -17,11 +17,12 @@ const FACE_LOST = "-80px";
 const FACE_WON = "-120px";
 
 class View extends EventTarget {
-    constructor({ model }) {
+    constructor({ model, globalOptions }) {
         super();
 
+        this.globalOptions = globalOptions;
         this.model = model;
-        this.tileSize = 20;
+        this.tileSize = this.calculateTileSize();
 
         this.playground = document.getElementById("playground");
         this.face = document.getElementById("face-button");
@@ -34,6 +35,10 @@ class View extends EventTarget {
 
         this.playground.style.setProperty("--tile-size", this.tileSize + "px");
 
+        while (this.playground.firstChild) {
+            this.playground.removeChild(this.playground.firstChild);
+        }
+
         this.setNumber(View.Counters.MINES, this.model.mineCount);
 
         this.initViewListeners();
@@ -43,6 +48,15 @@ class View extends EventTarget {
         this.face.addEventListener("click", this.onFaceClick.bind(this));
         this.playground.addEventListener("click", this.onPlaygroundClick.bind(this));
         this.playground.addEventListener("contextmenu", this.onPlaygroundRightClick.bind(this));
+
+        window.addEventListener("resize", this.onResize.bind(this));
+    }
+
+    onResize(event) {
+        if (this.globalOptions.resize) {
+            this.tileSize = this.calculateTileSize();
+            this.playground.style.setProperty("--tile-size", this.tileSize + "px");
+        }
     }
 
     onFaceClick(event) {
@@ -160,6 +174,11 @@ class View extends EventTarget {
     }
 
     setNumber(which, n) {
+        if (n >= 1000 || n <= -1000) {
+            console.error(`setNumber(${which}, ${n}): n too big`);
+            n = n % 1000;
+        }
+
         let counter;
         switch (which) {
             case View.Counters.MINES:
@@ -178,6 +197,30 @@ class View extends EventTarget {
         counter.querySelector(`img:nth-child(1)`).src = isNegative ? COUNTER_NEG : COUNTER_SRC[Math.floor(n / 100)];
         counter.querySelector(`img:nth-child(2)`).src = COUNTER_SRC[Math.floor((n % 100) / 10)];
         counter.querySelector(`img:nth-child(3)`).src = COUNTER_SRC[Math.floor(n % 10)];
+    }
+
+    calculateTileSize() {
+        if (!this.sizeBaseline) {
+            let mainCont = document.getElementById("game-container");
+            let controls = document.getElementById("controls");
+    
+            this.sizeBaseline = {
+                uiWidth: controls.clientWidth - mainCont.clientWidth,
+                uiHeight: -mainCont.clientHeight,
+            };
+        }
+
+        // Height uses mainCont height
+        let maxHeight = document.body.clientHeight + this.sizeBaseline.uiHeight;
+        // But width is just the borders... so CONTAINER - Controls-width
+        let maxWidth = document.body.clientWidth + this.sizeBaseline.uiWidth;
+
+        let size = Math.min(maxWidth / this.model.cols, maxHeight / this.model.rows);
+
+        // floor...?
+        size = Math.floor(size);
+
+        return size;
     }
 }
 
