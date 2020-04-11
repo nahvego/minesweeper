@@ -110,6 +110,9 @@ class View extends EventTarget {
             case View.Tiles.MINE_BOOM:
                 tile.classList.add("mine-exploded");
             break;
+            case View.Tiles.INCORRECT_MINE:
+                tile.classList.add("incorrect-mine");
+            break;
         }
         
         if (qs) {
@@ -119,16 +122,37 @@ class View extends EventTarget {
         }
     }
 
+    dropTile(x, y) {
+        let qs = this.playground.querySelector(`[data-row="${y}"][data-col="${x}"]`);
+        if (qs) {
+            this.playground.removeChild(qs);
+        }
+    }
+
     // ¿No necesita la view una referencia al model?
     gameLost(lostCoords) {
         this.controls.style.setProperty("--face-position", FACE_LOST);
-        for (let minePos of this.model.mineList) {
-            this.setTile(
-                minePos.x,
-                minePos.y,
-                lostCoords.x === minePos.x && lostCoords.y === minePos.y ? View.Tiles.MINE_BOOM : View.Tiles.MINE
-            );
+        for (let x = 0; x < this.model.cols; x++) {
+            for (let y = 0; y < this.model.rows; y++) {
+                console.log(x + "-" + y + "-" + this.model.isMine(x, y) + "-" + this.model.isFlagged(x, y));
+                if (this.model.isMine(x, y)) {
+                    this.setTile(
+                        x,
+                        y,
+                        lostCoords.x === x && lostCoords.y === y ? View.Tiles.MINE_BOOM : View.Tiles.MINE
+                    );
+                } else if (this.model.isFlagged(x, y)) {
+                    this.setTile(x, y, View.Tiles.INCORRECT_MINE);
+                }
+            }
         }
+        // for (let minePos of this.model.mineList) {
+        //     this.setTile(
+        //         minePos.x,
+        //         minePos.y,
+        //         lostCoords.x === minePos.x && lostCoords.y === minePos.y ? View.Tiles.MINE_BOOM : View.Tiles.MINE
+        //     );
+        // }
     }
 
     gameWon() {
@@ -163,6 +187,7 @@ Object.getPrototypeOf(View).Tiles = {
     NUMBER: 2,
     MINE: 3,
     MINE_BOOM: 4,
+    INCORRECT_MINE: 5,
 };
 
 Object.getPrototypeOf(View).Counters = {

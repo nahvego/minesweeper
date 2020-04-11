@@ -52,6 +52,10 @@ class Model {
         return this.field[x][y] !== undefined && (this.field[x][y] & Model.FieldFlags.REVEALED) > 0;
     }
 
+    isFlagged(x, y) {
+        return this.field[x][y] !== undefined && (this.field[x][y] & Model.FieldFlags.FLAG) > 0;
+    }
+
     // isRecursive haces las veces de flagholder
     revealTile(x, y, isRecursive) {
         if (this.isMine(x, y)) { throw new Error("Mine"); }
@@ -106,6 +110,47 @@ class Model {
         this.view.setNumber(View.Counters.MINES, this.mineCount - this.markedFlags);
     }
 
+    markTile(x, y) {
+        // Marks (?) a tile
+        this.field[x][y] |= Model.FieldFlags.MARK;
+        this.field[x][y] &= ~Model.FieldFlags.FLAG;
+
+        this.view.setTile(x, y, View.Tiles.MARK);
+
+        // Always subtract one from markedFlags
+        this.markedFlags--;
+        this.view.setNumber(View.Counters.MINES, this.mineCount - this.markedFlags);
+    }
+
+    unmarkTile(x, y) {
+        // Unmarks a tile. Subtracts from markedFlags only if field.x.y has Model.FieldFlags.FLAG
+        let dropFlag = (this.field[x][y] & Model.FieldFlags.FLAG) > 0;
+
+        this.field[x][y] &= ~Model.FieldFlags.MARK;
+        this.field[x][y] &= ~Model.FieldFlags.FLAG;
+
+        this.view.dropTile(x, y);
+
+        if (dropFlag) {
+            this.markedFlags--;
+            this.view.setNumber(View.Counters.MINES, this.mineCount - this.markedFlags);
+        }
+    }
+
+    getTileType(x, y) {
+        // returns FlagTypes
+        // If revealed => unknown (invalid op)
+        if (!this.field[x][y]) return Model.MarkTypes.UNKNOWN;
+
+        if ((this.field[x][y] & Model.FieldFlags.REVEALED) > 0) return Model.MarkTypes.UNKNOWN;
+
+        if ((this.field[x][y] & Model.FieldFlags.FLAG) > 0) return Model.MarkTypes.FLAGGED;
+
+        if ((this.field[x][y] & Model.FieldFlags.MARK) > 0) return Model.MarkTypes.MARKED;
+
+        return Model.MarkTypes.UNMARKED;
+    }
+
     getAdjacentCount(x, y) {
         let count = 0;
         if (x > 0 && y > 0                             && this.isMine(x - 1, y - 1)) count++;
@@ -128,15 +173,11 @@ Object.getPrototypeOf(Model).FieldFlags = {
     MARK:     0b1000,
 };
 
-Object.getPrototypeOf(Model).RevealFlags = {
-    UP:         0b1,
-    UP_RIGHT:   0b10,
-    RIGHT:      0b100,
-    DOWN_RIGHT: 0b1000,
-    DOWN:       0b10000,
-    DOWN_LEFT:  0b100000,
-    LEFT:       0b1000000,
-    UP_LEFT:    0b10000000,
+Object.getPrototypeOf(Model).MarkTypes = {
+    UNKNOWN: 0,
+    UNMARKED: 1,
+    FLAGGED: 2,
+    MARKED: 3,
 };
 
 export { Model };

@@ -2,14 +2,23 @@ import { Model } from './model';
 import { View } from './view';
 import { randomInt } from './utils';
 
+const DEFAULT_GLOBAL_OPTIONS = Object.freeze({
+    marks: false,
+});
+
 class Game {
-    constructor({ cols, rows, mineCount, mines = [] }) {
+    constructor({ cols, rows, mineCount, globalOptions, mines = [] }) {
 
         if (mines.length === 0) {
             // Generar minas
             mines = Game.generateMines(rows, cols, mineCount);
         }
 
+        if (!globalOptions) {
+            globalOptions = DEFAULT_GLOBAL_OPTIONS;
+        }
+
+        this.globalOptions = globalOptions;
         this.model = new Model({ cols, rows, mines });
         this.view = new View({ cols, rows, model: this.model});
         this.model.bindView(this.view);
@@ -86,7 +95,25 @@ class Game {
             return false; // Noop
         }
 
-        this.model.markTileFlag(event.detail.x, event.detail.y);
+        switch (this.model.getTileType(event.detail.x, event.detail.y)) {
+            case Model.MarkTypes.UNMARKED:
+            case Model.MarkTypes.UNKNOWN:
+                // Just flag
+                this.model.markTileFlag(event.detail.x, event.detail.y);
+            break;
+            case Model.MarkTypes.FLAGGED:
+                // Unmark if !global.marks, mark (?) if true
+                if (this.globalOptions.marks) {
+                    this.model.markTile(event.detail.x, event.detail.y);
+                } else {
+                    this.model.unmarkTile(event.detail.x, event.detail.y);
+                }
+            break;
+            case Model.MarkTypes.MARKED:
+                // Always unmark
+                this.model.unmarkTile(event.detail.x, event.detail.y);
+            break;
+        }
     }
 
     isComplete() {

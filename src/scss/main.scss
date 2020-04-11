@@ -87,6 +87,10 @@ body {
             &.mine-exploded {
                 background-position-y: calc(-12 * var(--tile-size));
             }
+
+            &.incorrect-mine {
+                background-position-y: calc(-13 * var(--tile-size));
+            }
         }
     }
 
