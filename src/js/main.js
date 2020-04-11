@@ -1,11 +1,14 @@
 import { Game } from './game';
 
+window.gi = {};
+
 document.addEventListener("DOMContentLoaded", function() {
-    window.gi = (function() {
+    let g = function() {
         this.game = new Game({
             cols: 40,
             rows: 20,
-            mineCount: 30,
+            mineCount: 1,
         });
-    })();
-})
+    };
+    g.call(window.gi)
+});
