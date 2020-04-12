@@ -153,7 +153,7 @@ class View extends EventTarget {
                         y,
                         lostCoords.x === x && lostCoords.y === y ? View.Tiles.MINE_BOOM : View.Tiles.MINE
                     );
-                } else if (this.model.isMine(x, y) && this.model.isFlagged(x, y)) {
+                } else if (!this.model.isMine(x, y) && this.model.isFlagged(x, y)) {
                     this.setTile(x, y, View.Tiles.INCORRECT_MINE);
                 }
             }
