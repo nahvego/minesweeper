@@ -59,7 +59,7 @@ class Model {
     // isRecursive haces las veces de flagholder
     revealTile(x, y, isRecursive) {
         if (this.isMine(x, y)) { throw new Error("Mine"); }
-        if (this.isRevealed(x, y)) { return []; }
+        if (this.isRevealed(x, y) || this.isFlagged(x, y)) { return []; }
         let map = [];
         let adjacent = this.getAdjacentCount(x, y);
         map.push({ x, y, adjacent });
