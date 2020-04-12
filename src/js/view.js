@@ -147,13 +147,13 @@ class View extends EventTarget {
         for (let x = 0; x < this.model.cols; x++) {
             for (let y = 0; y < this.model.rows; y++) {
                 console.log(x + "-" + y + "-" + this.model.isMine(x, y) + "-" + this.model.isFlagged(x, y));
-                if (this.model.isMine(x, y)) {
+                if (this.model.isMine(x, y) && !this.model.isFlagged(x, y)) {
                     this.setTile(
                         x,
                         y,
                         lostCoords.x === x && lostCoords.y === y ? View.Tiles.MINE_BOOM : View.Tiles.MINE
                     );
-                } else if (this.model.isFlagged(x, y)) {
+                } else if (this.model.isMine(x, y) && this.model.isFlagged(x, y)) {
                     this.setTile(x, y, View.Tiles.INCORRECT_MINE);
                 }
             }
