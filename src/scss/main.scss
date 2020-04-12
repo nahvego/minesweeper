@@ -3,18 +3,6 @@
 :root {
     --border-size: 10px;
 }
-body {
-    padding: 0;
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    // justify-content: stretch;
-    // align-items: stretch;
-}
 
 #game-container {
     background:

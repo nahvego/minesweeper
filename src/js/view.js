@@ -45,11 +45,14 @@ class View extends EventTarget {
     }
 
     initViewListeners() {
-        this.face.addEventListener("click", this.onFaceClick.bind(this));
-        this.playground.addEventListener("click", this.onPlaygroundClick.bind(this));
-        this.playground.addEventListener("contextmenu", this.onPlaygroundRightClick.bind(this));
-
-        window.addEventListener("resize", this.onResize.bind(this));
+        this.listeners = [
+            this.onPlaygroundClick.bind(this),
+            this.onPlaygroundRightClick.bind(this),
+            this.onResize.bind(this),
+        ];
+        this.playground.addEventListener("click", this.listeners[0]);
+        this.playground.addEventListener("contextmenu", this.listeners[1]);
+        window.addEventListener("resize", this.listeners[2]);
     }
 
     onResize(event) {
@@ -57,11 +60,6 @@ class View extends EventTarget {
             this.tileSize = this.calculateTileSize();
             this.playground.style.setProperty("--tile-size", this.tileSize + "px");
         }
-    }
-
-    onFaceClick(event) {
-        event.preventDefault();
-        this.dispatch("reset");
     }
 
     onPlaygroundClick(event) {
@@ -200,20 +198,20 @@ class View extends EventTarget {
     }
 
     calculateTileSize() {
-        if (!this.sizeBaseline) {
-            let mainCont = document.getElementById("game-container");
+        if (!View.sizeBaseline) {
+            let mainCont = document.getElementById("full-container");
             let controls = document.getElementById("controls");
     
-            this.sizeBaseline = {
+            View.sizeBaseline = {
                 uiWidth: controls.clientWidth - mainCont.clientWidth,
                 uiHeight: -mainCont.clientHeight,
             };
         }
 
         // Height uses mainCont height
-        let maxHeight = document.body.clientHeight + this.sizeBaseline.uiHeight;
+        let maxHeight = document.body.clientHeight + View.sizeBaseline.uiHeight;
         // But width is just the borders... so CONTAINER - Controls-width
-        let maxWidth = document.body.clientWidth + this.sizeBaseline.uiWidth;
+        let maxWidth = document.body.clientWidth + View.sizeBaseline.uiWidth;
 
         let size = Math.min(maxWidth / this.model.cols, maxHeight / this.model.rows);
 
@@ -221,6 +219,12 @@ class View extends EventTarget {
         size = Math.floor(size);
 
         return size;
+    }
+
+    destroy() {
+        this.playground.removeEventListener("click", this.listeners[0]);
+        this.playground.removeEventListener("contextmenu", this.listeners[1]);
+        window.removeEventListener("resize", this.listeners[2]);
     }
 }
 

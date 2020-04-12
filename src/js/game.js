@@ -31,9 +31,12 @@ class Game {
     }
 
     initListeners() {
-        this.view.addEventListener("click", this.onPlaygroundClick.bind(this));
-        this.view.addEventListener("rightClick", this.onPlaygroundRightClick.bind(this));
-        this.view.addEventListener("reset", this.resetGame.bind(this));
+        this.listeners = [
+            this.onPlaygroundClick.bind(this),
+            this.onPlaygroundRightClick.bind(this),
+        ];
+        this.view.addEventListener("click", this.listeners[0]);
+        this.view.addEventListener("rightClick", this.listeners[1]);
     }
 
     startGame() {
@@ -121,8 +124,10 @@ class Game {
         return this.model.revealed === this.model.cols * this.model.rows - this.model.mineCount;
     }
 
-    resetGame() {
-        // TODO
+    destroy() {
+        this.view.removeEventListener("click", this.listeners[0]);
+        this.view.removeEventListener("rightClick", this.listeners[1]);
+        this.view.destroy();
     }
 
     static generateMines(rowCount, colCount, mineCount) {

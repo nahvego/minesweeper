@@ -7,6 +7,7 @@
     <script type="text/javascript" src="./js/main.js"></script>
 
     <link rel="stylesheet" href="./scss/main.scss" type="text/css" />
+    <link rel="stylesheet" href="./scss/window.scss" type="text/css" />
 
     <link rel="prefetch" href="./static/number_0.gif">
     <link rel="prefetch" href="./static/number_1.gif">
@@ -22,19 +23,45 @@
 
 </head>
 <body>
-    <div id="game-container">
-        <div id="playground"></div>
-        <div id="controls">
-            <div id="mine-counter">
-                <img class="cnumber" src="./static/number_0.gif" />
-                <img class="cnumber" src="./static/number_0.gif" />
-                <img class="cnumber" src="./static/number_0.gif" />
-            </div>
-            <a id="face-button"></a>
-            <div id="time-counter">
-                <img class="cnumber" src="./static/number_0.gif" />
-                <img class="cnumber" src="./static/number_0.gif" />
-                <img class="cnumber" src="./static/number_0.gif" />
+    <div id="full-container">
+        <ul id="menubar">
+            <li>
+                <a>Game</a>
+                <ul class="menu-content">
+                    <li data-action="new-game">New game</li>
+                    <hr />
+                    <li
+                        data-action="change-difficulty"
+                        data-difficulty="Beginner">Beginner</li>
+                    <li
+                        data-action="change-difficulty"
+                        data-difficulty="Intermediate">Intermediate</li>
+                    <li
+                        data-action="change-difficulty"
+                        data-difficulty="Expert">Expert</li>
+                    <li
+                        data-action="change-difficulty"
+                        data-difficulty="Custom">Custom</li>
+                    <hr />
+                    <li data-action="toggle-marks">Marks (?)</li>
+                </ul>
+            </li>
+            <li><a>Help</a></li>
+        </ul>
+        <div id="game-container">
+            <div id="playground"></div>
+            <div id="controls">
+                <div id="mine-counter">
+                    <img class="cnumber" src="./static/number_0.gif" />
+                    <img class="cnumber" src="./static/number_0.gif" />
+                    <img class="cnumber" src="./static/number_0.gif" />
+                </div>
+                <a id="face-button"></a>
+                <div id="time-counter">
+                    <img class="cnumber" src="./static/number_0.gif" />
+                    <img class="cnumber" src="./static/number_0.gif" />
+                    <img class="cnumber" src="./static/number_0.gif" />
+                </div>
             </div>
         </div>
     </div>
