@@ -77,8 +77,10 @@ class Game {
         }
 
         if (this.model.isMine(event.detail.x, event.detail.y)) {
-            this.stopGame();
-            this.view.gameLost({ x: event.detail.x, y: event.detail.y });
+            if (!this.model.isFlagged(event.detail.x, event.detail.y)) {
+                this.stopGame();
+                this.view.gameLost({ x: event.detail.x, y: event.detail.y });
+            }
         } else {
             this.model.revealTile(event.detail.x, event.detail.y);
         }
