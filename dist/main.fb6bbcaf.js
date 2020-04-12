@@ -371,9 +371,9 @@ var View = /*#__PURE__*/function (_EventTarget) {
         for (var y = 0; y < this.model.rows; y++) {
           console.log(x + "-" + y + "-" + this.model.isMine(x, y) + "-" + this.model.isFlagged(x, y));
 
-          if (this.model.isMine(x, y)) {
+          if (this.model.isMine(x, y) && !this.model.isFlagged(x, y)) {
             this.setTile(x, y, lostCoords.x === x && lostCoords.y === y ? View.Tiles.MINE_BOOM : View.Tiles.MINE);
-          } else if (this.model.isFlagged(x, y)) {
+          } else if (this.model.isMine(x, y) && this.model.isFlagged(x, y)) {
             this.setTile(x, y, View.Tiles.INCORRECT_MINE);
           }
         }
@@ -835,11 +835,13 @@ var Game = /*#__PURE__*/function () {
       }
 
       if (this.model.isMine(event.detail.x, event.detail.y)) {
-        this.stopGame();
-        this.view.gameLost({
-          x: event.detail.x,
-          y: event.detail.y
-        });
+        if (!this.model.isFlagged(event.detail.x, event.detail.y)) {
+          this.stopGame();
+          this.view.gameLost({
+            x: event.detail.x,
+            y: event.detail.y
+          });
+        }
       } else {
         this.model.revealTile(event.detail.x, event.detail.y);
       }
@@ -1052,7 +1054,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63343" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60376" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
