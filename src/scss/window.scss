@@ -56,6 +56,11 @@ body {
             li {
                 padding: .5em 1em .5em 2em;
                 display: block;
+
+                &.checked {
+                    background: url('../static/check.png') no-repeat left center;
+                    background-position-x: calc(1em - 8px);
+                }
             }
         }
     }

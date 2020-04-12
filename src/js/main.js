@@ -47,8 +47,16 @@ window.addEventListener("load", function() {
     }
 
     function changeDifficulty(difficulty) {
+        document.querySelector("li.checked[data-action=change-difficulty]").classList.remove("checked");
+        document.querySelector(`li[data-action="change-difficulty"][data-difficulty="${difficulty}"]`).classList.add("checked");
         window.globalOptions.difficulty = difficulty;
         newGame();
+    }
+
+    function toggleMarks() {
+        window.globalOptions.marks = !window.globalOptions.marks;
+
+        document.querySelector("li[data-action=toggle-marks]").classList.toggle("checked");
     }
 
     newGame();
@@ -79,6 +87,15 @@ window.addEventListener("load", function() {
             case "change-difficulty":
                 changeDifficulty(event.target.dataset.difficulty);
             break;
+            case "toggle-marks":
+                toggleMarks();
+            break;
         }
     });
+
+    if (window.globalOptions.marks) {
+        document.querySelector("li[data-action=toggle-marks]").classList.add("checked");
+    }
+
+    document.querySelector(`li[data-action="change-difficulty"][data-difficulty="${window.globalOptions.difficulty}"]`).classList.add("checked");
 });
