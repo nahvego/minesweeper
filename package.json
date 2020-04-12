@@ -5,10 +5,13 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
+    "cssnano": "^4.1.10",
     "sass": "^1.26.3"
   },
   "scripts": {
     "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "build-pages": "parcel build src/index.html --public-url ./ && git add dist -f && git commit -m \"GitHub Pages\" && git subtree push --prefix dist origin gh-pages",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
